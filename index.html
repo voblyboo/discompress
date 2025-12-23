@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord 10MB Compressor</title>
+    <style>
+        :root {
+            --bg: #36393f;
+            --box-bg: #2f3136;
+            --text: #dcddde;
+            --accent: #5865F2;
+            --accent-hover: #4752c4;
+            --danger: #ed4245;
+            --success: #3ba55c;
+            --disabled: #4f545c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--box-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h1 { margin-top: 0; font-size: 1.5rem; margin-bottom: 20px; }
+
+        /* Custom File Input Styling */
+        input[type="file"] { display: none; }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+            margin: 5px;
+        }
+
+        .btn:hover { background-color: var(--accent-hover); }
+        .btn:disabled, .btn.disabled {
+            background-color: var(--disabled);
+            cursor: not-allowed;
+            color: #72767d;
+        }
+
+        .file-label {
+            background-color: #4f545c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .file-label:hover { background-color: #5d6269; }
+
+        /* Video Previews */
+        .preview-area {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 4px;
+            background: #000;
+            max-height: 300px;
+            display: none; /* Hidden until selected */
+        }
+
+        .video-label {
+            font-size: 0.85rem;
+            color: #b9bbbe;
+            text-align: left;
+            margin-bottom: 5px;
+            display: none;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: #202225;
+            border-radius: 10px;
+            margin: 20px 0;
+            height: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--success);
+            transition: width 0.2s;
+        }
+
+        .status-text {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #b9bbbe;
+            min-height: 1.2em;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #72767d;
+            margin-top: 5px;
+        }
+    </style>
+    
+    <!-- Load FFmpeg.wasm from CDN -->
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Discord 10MB Compressor</h1>
+        
+        <!-- File Input -->
+        <label for="video-upload" class="btn file-label">
+            <span>📁 Choose Video File</span>
+        </label>
+        <input type="file" id="video-upload" accept="video/mp4,video/mov,video/avi">
+
+        <!-- Input Preview -->
+        <div class="preview-area">
+            <div>
+                <div id="input-label" class="video-label">Original Video:</div>
+                <video id="input-video" controls></video>
+                <div class="stats" id="input-stats"></div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div style="margin-top: 20px;">
+            <button id="compress-btn" class="btn disabled" disabled>Compress Video</button>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="status-text" id="status-text">Load the page via a local server to start core...</div>
+
+        <!-- Output Preview -->
+        <div class="preview-area">
+            <div>
+                <div id="output-label" class="video-label">Compressed Result:</div>
+                <video id="output-video" controls></video>
+                <div class="stats" id="output-stats"></div>
+            </div>
+        </div>
+
+        <!-- Download -->
+        <div style="margin-top: 20px;">
+            <a id="download-btn" class="btn disabled">Download Result</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
